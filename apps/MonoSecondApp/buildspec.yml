@@ -1,0 +1,27 @@
+version: 0.2
+env:
+  variables:
+    AWS_ACCOUNT_ID: "391566720493"
+    AWS_DEFAULT_REGION: "ap-south-1"
+    IMAGE_REPO_NAME: "mono-second-app"
+    IMAGE_TAG: "blue-v1"
+phases:
+  install:
+    runtime-versions:
+        java: corretto11    
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION) 
+  build:
+    commands:
+      - chmod 777 apps/MonoSecondApp/gradlew
+      - echo Starting Mono Second App Build...
+      - ./apps/MonoSecondApp/gradlew clean build -b=./apps/MonoSecondApp/build.gradle  --stacktrace
+      - docker build -f ./apps/MonoSecondApp/Dockerfile -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG .
+  post_build:
+    commands:
+      - echo Pushing the Docker image to ECR Repository...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - chmod 777 scripts/stop_old_secondapp_instances.sh
+      - ./scripts/stop_old_secondapp_instances.sh

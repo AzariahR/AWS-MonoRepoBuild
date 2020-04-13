@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+	<Appenders>
+		<Console name="LogToConsole" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[%d{yyyy-MM-dd HH:mm:SSS}] [%-35.35C{1.}:%L] - [%-5level] [%X{AWS-XRAY-TRACE-ID}] - [%tid] - [%replace{%msg}{\r\n}{ }] -- [%replace{%rException}{\r\n}{ }]%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<!-- avoid duplicated logs with additivity=false -->
+		<Logger name="com.azar.firstapp" level="debug"
+			additivity="false">
+			<AppenderRef ref="LogToConsole" />
+		</Logger>
+		<Root level="error">
+			<AppenderRef ref="LogToConsole" />
+		</Root>
+	</Loggers>
+</Configuration>

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "description": "First App methods.",
+      "service_name": "*",
+      "http_method": "GET",
+      "url_path": "/firstApp/*",
+      "fixed_target": 2,
+      "rate": 1.0
+    }
+  ],
+  "default": {
+    "fixed_target": 5,
+    "rate": 0.1
+  }
+}
